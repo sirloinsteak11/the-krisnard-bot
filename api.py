@@ -3,8 +3,13 @@ import tweepy as tw
 from pygelbooru import Gelbooru
 import os
 
-blacklist = ['gore', 'rape', 'futa', 'loli', 'guro', 'snuff', 'amputation', 'pregnant']
- 
+gel_api_key = os.environ['gel_api_key']
+gel_id_key = os.environ['gel_id_key']
+
+blacklist = [
+  'gore', 'rape', 'futa', 'loli', 'guro', 'snuff', 'amputation', 'pregnant'
+]
+
 # API keyws that yous saved earlier
 bearer_token = os.environ['bearer_token']
 
@@ -15,14 +20,17 @@ tclient = tw.Client(bearer_token)
 user_id = os.environ['twit_user_id']
 
 # hello gelbooru
-gelbooru = Gelbooru()
+gelbooru = Gelbooru(gel_api_key, gel_id_key)
 
 #empty variables
 tweet_list = []
 tosendprevious = ''
 
+
 async def get_random_tweet():
-  response = tclient.get_liked_tweets(user_id, tweet_fields =["entities"], max_results=100)
+  response = tclient.get_liked_tweets(user_id,
+                                      tweet_fields=["entities"],
+                                      max_results=100)
   for tweet in response.data:
     tweets = tweet.id, tweet.entities
     tweet_list.append(tweets)
@@ -31,6 +39,7 @@ async def get_random_tweet():
   second = first.get('urls')
   third = second[0]
   return third.get('expanded_url')
+
 
 async def get_random_gelbooru(tags):
   msgcontent = tags.replace('!gel', ' ')
